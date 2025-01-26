@@ -44,7 +44,7 @@ async def voter_add(electionID, uid, xhash):
     if not db.fetchone("voters", id=eid):
         db.insert("voters", {"election": electionID, "hash": xhash, "uid": uid, "id": eid}
         )
-    return eid
+    return xhash
 
 
 
