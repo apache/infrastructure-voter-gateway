@@ -23,7 +23,7 @@ def my_app():
         session = await asfquart.session.read()
         if not session or not session.isMember:
             return quart.redirect("/auth?login=/gateway")
-        
+
         # Ballot ID: hash of app secret and UID
         uid_hashed = hashlib.sha224((app.secret_key + ":" + session.uid).encode("utf-8")).hexdigest()
 
@@ -38,11 +38,14 @@ def my_app():
 async def voter_add(election, uid, xhash):
     """Add a voter to the election, or returns the ballot ID if it already exists"""
     db = asfpy.sqlite.DB(STEVE_DB)
-    eid = hashlib.sha224((election + ":" + xhash).encode("utf-8")).hexdigest()
+    election = db.fetchone("elections", id=election)
+    assert election, "Could not find election in db!"
+    eid = hashlib.sha512((election['hash'] + uid).encode("utf-8")).hexdigest()
     if not db.fetchone("voters", id=eid):
         db.insert("voters", {"election": election, "hash": xhash, "uid": uid, "id": eid}
         )
     return eid
+
 
 
 if __name__ == "__main__":
