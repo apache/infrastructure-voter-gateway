@@ -7,8 +7,8 @@ WorkingDirectory=/opt/voter-gateway
 ExecStart=/usr/local/bin/poetry run gateway.py
 ExecReload=/bin/kill -SIGUSR1 $MAINPID
 Restart=always
-User=agenda
-Group=agenda
+User=www-data
+Group=www-data
 LogLevelMax=info
 
 [Install]
