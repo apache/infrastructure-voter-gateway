@@ -35,14 +35,14 @@ def my_app():
     app.runx(port=8085)
 
 
-async def voter_add(election, uid, xhash):
+async def voter_add(electionID, uid, xhash):
     """Add a voter to the election, or returns the ballot ID if it already exists"""
     db = asfpy.sqlite.DB(STEVE_DB)
-    election = db.fetchone("elections", id=election)
+    election = db.fetchone("elections", id=electionID)
     assert election, "Could not find election in db!"
     eid = hashlib.sha512((election['hash'] + uid).encode("utf-8")).hexdigest()
     if not db.fetchone("voters", id=eid):
-        db.insert("voters", {"election": election, "hash": xhash, "uid": uid, "id": eid}
+        db.insert("voters", {"election": electionID, "hash": xhash, "uid": uid, "id": eid}
         )
     return eid
 
