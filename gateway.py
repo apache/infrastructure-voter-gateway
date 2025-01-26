@@ -1,5 +1,4 @@
 import asfquart
-from asfquart.auth import Requirements as R
 import asfquart.generics
 import asfquart.session
 import hashlib
@@ -9,10 +8,10 @@ import quart
 CURRENT_ELECTION_ID = "45f66648"
 STEVE_DB = "/var/www/steve/steve-test.db"
 
-
 # Rewire OAuth to not use OIDC for now
 asfquart.generics.OAUTH_URL_INIT = "https://oauth.apache.org/auth?state=%s&redirect_uri=%s"
 asfquart.generics.OAUTH_URL_CALLBACK = "https://oauth.apache.org/token?code=%s"
+
 
 def my_app():
     # Construct the quart service. By default, the oauth gateway is enabled at /oauth.
@@ -29,7 +28,7 @@ def my_app():
 
         # Check if exists, otherwise add ballot
         ballot_id = await voter_add(CURRENT_ELECTION_ID, session.email, uid_hashed)
-        url = f"https://vote.apache.org/election.html?{CURRENT_ELECTION_ID}/{ballot_id}"
+        url = f"/election.html?{CURRENT_ELECTION_ID}/{ballot_id}"
         return quart.redirect(url)
 
     app.runx(port=8085)
@@ -40,12 +39,10 @@ async def voter_add(electionID, uid, xhash):
     db = asfpy.sqlite.DB(STEVE_DB)
     election = db.fetchone("elections", id=electionID)
     assert election, "Could not find election in db!"
-    eid = hashlib.sha512((election['hash'] + uid).encode("utf-8")).hexdigest()
+    eid = hashlib.sha512((election["hash"] + xhash).encode("utf-8")).hexdigest()
     if not db.fetchone("voters", id=eid):
-        db.insert("voters", {"election": electionID, "hash": xhash, "uid": uid, "id": eid}
-        )
+        db.insert("voters", {"election": electionID, "hash": xhash, "uid": uid, "id": eid})
     return xhash
-
 
 
 if __name__ == "__main__":
