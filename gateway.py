@@ -4,6 +4,7 @@ import asfquart.generics
 import asfquart.session
 import hashlib
 import asfpy.sqlite
+import quart
 
 CURRENT_ELECTION_ID = "45f66648"
 STEVE_DB = "/var/www/steve/steve-test.db"
@@ -27,7 +28,8 @@ def my_app():
 
         # Check if exists, otherwise add ballot
         ballot_id = await voter_add(CURRENT_ELECTION_ID, session.email, uid_hashed)
-        return f"https://vote.apache.org/election.html?{CURRENT_ELECTION_ID}/{ballot_id}"
+        url = f"https://vote.apache.org/election.html?{CURRENT_ELECTION_ID}/{ballot_id}"
+        return quart.redirect(url)
 
     app.runx(port=8085)
 
