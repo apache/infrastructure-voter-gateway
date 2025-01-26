@@ -4,7 +4,7 @@ Description=ASF Voter Gateway
 [Service]
 Type=simple
 WorkingDirectory=/opt/voter-gateway
-ExecStart=/usr/local/bin/poetry run gateway.py
+ExecStart=/usr/local/bin/poetry run python3 gateway.py
 ExecReload=/bin/kill -SIGUSR1 $MAINPID
 Restart=always
 User=www-data
