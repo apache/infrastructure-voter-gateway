@@ -19,10 +19,11 @@ def my_app():
     app = asfquart.construct("voter_gateway")
 
     @app.route("/")
-    @asfquart.auth.require(R.member)
     async def get_ballot():
         session = await asfquart.session.read()
-
+        if not session or not session.isMember:
+            return quart.redirect("/auth?login=/gateway")
+        
         # Ballot ID: hash of app secret and UID
         uid_hashed = hashlib.sha224((app.secret_key + ":" + session.uid).encode("utf-8")).hexdigest()
 
