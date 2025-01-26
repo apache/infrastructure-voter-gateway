@@ -1,0 +1,16 @@
+[Unit]
+Description=ASF Voter Gateway
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/voter-gateway
+ExecStart=/usr/local/bin/poetry run gateway.py
+ExecReload=/bin/kill -SIGUSR1 $MAINPID
+Restart=always
+User=agenda
+Group=agenda
+LogLevelMax=info
+
+[Install]
+WantedBy=multi-user.targe
+t

@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "infrastructure-voter-gateway"
+version = "0.1.0"
+description = ""
+authors = ["Daniel Gruno <humbedooh@apache.org>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "<4,>=3.10"
+asfquart = "^0.1.8"
+asfpy = "0.52"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
