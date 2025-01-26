@@ -4,6 +4,7 @@ import asfquart.session
 import hashlib
 import asfpy.sqlite
 import quart
+import asfpy.syslog
 
 CURRENT_ELECTION_ID = "45f66648"
 STEVE_DB = "/var/www/steve/steve-test.db"
@@ -11,6 +12,9 @@ STEVE_DB = "/var/www/steve/steve-test.db"
 # Rewire OAuth to not use OIDC for now
 asfquart.generics.OAUTH_URL_INIT = "https://oauth.apache.org/auth?state=%s&redirect_uri=%s"
 asfquart.generics.OAUTH_URL_CALLBACK = "https://oauth.apache.org/token?code=%s"
+
+# Print to syslog
+lprint = asfpy.syslog.Printer(identity='voter-gateway')
 
 
 def my_app():
@@ -41,6 +45,7 @@ async def voter_add(electionID, uid, xhash):
     assert election, "Could not find election in db!"
     eid = hashlib.sha512((election["hash"] + xhash).encode("utf-8")).hexdigest()
     if not db.fetchone("voters", id=eid):
+        lprint(f"Registered new ballot for: {uid}")
         db.insert("voters", {"election": electionID, "hash": xhash, "uid": uid, "id": eid})
     return xhash
 
