@@ -12,5 +12,4 @@ Group=www-data
 LogLevelMax=info
 
 [Install]
-WantedBy=multi-user.targe
-t
+WantedBy=multi-user.target
