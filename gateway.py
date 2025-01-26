@@ -45,7 +45,8 @@ async def voter_add(electionID, uid, xhash):
     assert election, "Could not find election in db!"
     eid = hashlib.sha512((election["hash"] + xhash).encode("utf-8")).hexdigest()
     if not db.fetchone("voters", id=eid):
-        lprint(f"Registered new ballot for: {uid}")
+        lprint(f"Registered new ballot for:")
+        lprint(uid)
         db.insert("voters", {"election": electionID, "hash": xhash, "uid": uid, "id": eid})
     return xhash
 
